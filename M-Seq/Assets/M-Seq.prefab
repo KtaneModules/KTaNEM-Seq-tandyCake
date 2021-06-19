@@ -823,15 +823,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 9ccb314f748fc514a9daa7c244e469c5, type: 3}
   - {fileID: 8300000, guid: 3ee409c906e92ee44b9b1c4b4fca4320, type: 3}
   symbols:
-  - {fileID: 21300000, guid: 675f9330da514ff4c90acb7b163087f9, type: 3}
-  - {fileID: 21300000, guid: 61df5f6d0834c5d42910579e0f3dfae0, type: 3}
-  - {fileID: 21300000, guid: 504dde4ea6c3e564d981b8c8e2a8058b, type: 3}
-  - {fileID: 21300000, guid: fc29b0354cda0c44b913b81b9eae6b3c, type: 3}
-  - {fileID: 21300000, guid: a55db46f70b5c5f40955730364334a19, type: 3}
-  - {fileID: 21300000, guid: fccf5bf8cffafa6489dc702666b05f2f, type: 3}
-  - {fileID: 21300000, guid: 359aae63d9bd05c4fb2adcdbba80490f, type: 3}
-  - {fileID: 21300000, guid: ddc9de75a904703468738e56d9e61639, type: 3}
-  - {fileID: 21300000, guid: a74394173348b8245bfca341a0bbfc36, type: 3}
+  - {fileID: 21300000, guid: 292c9899cdaa14747af3b3c58d3084f5, type: 3}
+  - {fileID: 21300000, guid: 1d41faea47c4a26449cbcb2eb4aa3b92, type: 3}
+  - {fileID: 21300000, guid: a485fe8e98c87614ba8dfbccb0f87ee5, type: 3}
+  - {fileID: 21300000, guid: c89b12ea65b9750449e708f5fefb76c6, type: 3}
+  - {fileID: 21300000, guid: e3eda1743ee04b241905a60a4a074b79, type: 3}
+  - {fileID: 21300000, guid: ba78cfd3d27b97b4a8046c680ecfae3b, type: 3}
+  - {fileID: 21300000, guid: f9f3e24e52a0ca64595315c0d493a00e, type: 3}
+  - {fileID: 21300000, guid: 3aba21f6204c6704b908108d991429ff, type: 3}
+  - {fileID: 21300000, guid: 76d94f79de1eb944b8264b063ae7035f, type: 3}
 --- !u!114 &114087420347994600
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1057,5 +1057,5 @@ SpriteRenderer:
   m_Size: {x: 10, y: 10}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
