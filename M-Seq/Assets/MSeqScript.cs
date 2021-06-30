@@ -162,7 +162,7 @@ public class MSeqScript : MonoBehaviour {
             Audio.PlaySoundAtTransform("strike", transform);
             selectedClips = clips.Shuffle().Take(3).ToArray();
             for (int i = 0; i < 3; i++)
-                sequences[i].Shuffle();
+                sequences[i] = sequences[i].Take(8).ToArray().Shuffle();
             state = State.Init;
         }
     }
