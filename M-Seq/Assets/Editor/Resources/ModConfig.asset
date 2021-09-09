@@ -16,6 +16,6 @@ MonoBehaviour:
   author: Danny7007
   description: "L'ordinateur il s'est \xE9teint.\r\n\r\nModule by Danny7007\r\nmoduleID:
     mSeq\r\nManual can be found at ktane.timwi.de"
-  version: 1.0.0
+  version: 2.1.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: 312d3a2719fbb2846ba4578c1d3f953b, type: 3}

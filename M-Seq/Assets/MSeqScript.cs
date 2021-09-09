@@ -156,15 +156,20 @@ public class MSeqScript : MonoBehaviour {
         else
         {
             Debug.LogFormat("[M-Seq #{0}] That is incorrect. Strike incurred and module reverted to initial state.", moduleId);
-            Module.HandleStrike();
-            submission = new bool[10];
-            pointer = -1;
             Audio.PlaySoundAtTransform("strike", transform);
-            selectedClips = clips.Shuffle().Take(3).ToArray();
-            for (int i = 0; i < 3; i++)
-                sequences[i] = sequences[i].Take(8).ToArray().Shuffle();
+            Module.HandleStrike();
+            Reset();
             state = State.Init;
         }
+    }
+    void Reset()
+    {
+        submission = new bool[10];
+        countdownCounter = 0;
+        pointer = -1;
+        selectedClips = clips.Shuffle().Take(3).ToArray();
+        for (int i = 0; i < 3; i++)
+            sequences[i] = sequences[i].Take(8).ToArray().Shuffle();
     }
 
     void Hold()
@@ -173,7 +178,7 @@ public class MSeqScript : MonoBehaviour {
         button.AddInteractionPunch(0.5f);
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.BigButtonPress, button.transform);
         buttonIn = StartCoroutine(HoldAnim());
-        if (state == State.Submitting && submission.Length != 0)
+        if (state == State.Submitting && submission.Length != 0 && pointer >= 0)
             submission[pointer] = true;
     }
     void Release()
@@ -192,7 +197,13 @@ public class MSeqScript : MonoBehaviour {
                 state = State.Countdown;
                 break;
             case State.Submitting:
-                submission[pointer] = true;
+                if (submission.Length != 0 && pointer >= 0)
+                    submission[pointer] = true;
+                break;
+            case State.Countdown:
+                state = State.Init;
+                Reset();
+                Audio.PlaySoundAtTransform("ResetBeep", transform);
                 break;
             default: break;
         }
@@ -286,9 +297,22 @@ public class MSeqScript : MonoBehaviour {
     }
 
     #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use [!{0} play] to play the sequence. Use [!{0} submit 01101101] to submit that sequence into the module.";
+    private readonly string TwitchHelpMessage = @"Use [!{0} play] to play the sequence. Use [!{0} submit 01101101] to submit that sequence into the module. Use [!{0} reset] to reset to the initial";
 #pragma warning restore 414
 
+    IEnumerator ToggleButton()
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (!held)
+            button.OnInteract();
+        else button.OnInteractEnded();
+        yield return new WaitForSeconds(0.1f);
+    }
+    IEnumerator TapButton()
+    {
+        yield return ToggleButton();
+        yield return ToggleButton();
+    }
     IEnumerator ProcessTwitchCommand(string command)
     {
         command = command.Trim().ToUpperInvariant();
@@ -300,9 +324,20 @@ public class MSeqScript : MonoBehaviour {
             else
             {
                 yield return null;
-                button.OnInteract();
-                yield return new WaitForSeconds(0.2f);
-                button.OnInteractEnded();
+                yield return TapButton();
+            }
+        }
+        else if (command == "RESET")
+        {
+            if (state != State.Idle)
+                yield return "sendtochaterror You cannot reset the module at this time.";
+            else
+            {
+                yield return null;
+                yield return TapButton();
+                yield return new WaitUntil(() => state == State.Countdown);
+                yield return new WaitForSeconds(0.1f);
+                yield return TapButton();
             }
         }
         else if (parameters.Length == 2 && parameters.First() == "SUBMIT" && parameters.Last().All(x => "01".Contains(x)))
@@ -313,9 +348,7 @@ public class MSeqScript : MonoBehaviour {
             {
                 yield return null;
                 bool[] submitting = parameters.Last().TrimEnd('0').Select(x => x == '1').ToArray();
-                button.OnInteract();
-                yield return new WaitForSeconds(0.2f);
-                button.OnInteractEnded();
+                yield return TapButton();
                 while (state != State.Submitting)
                     yield return null;
                 while (pointer < submitting.Length)
@@ -323,10 +356,7 @@ public class MSeqScript : MonoBehaviour {
                     if (pointer != -1 && submitting[pointer] && !tpPressed)
                     {
                         tpPressed = true;
-                        yield return new WaitForSeconds(0.2f);
-                        button.OnInteract();
-                        yield return new WaitForSeconds(0.2f);
-                        button.OnInteractEnded();
+                        yield return ToggleButton();
                     }
                     yield return null;
                 }
@@ -339,25 +369,17 @@ public class MSeqScript : MonoBehaviour {
     {
         bool[] submitting = solution.Select(x => x ? "1" : "0").Join("").TrimEnd('0').Select(x => x == '1').ToArray();
         if (state == State.Init)
-        {
-            button.OnInteract();
-            yield return new WaitForSeconds(0.2f);
-            button.OnInteractEnded();
-        }
+            yield return TapButton();
         while (state == State.Playing)
             yield return true;
-        button.OnInteract();
-        yield return new WaitForSeconds(0.2f);
-        button.OnInteractEnded();
+        yield return TapButton();
+
         while (pointer < submitting.Length)
         {
             if (pointer != -1 && submitting[pointer] && !tpPressed)
             {
                 tpPressed = true;
-                yield return new WaitForSeconds(0.2f);
-                button.OnInteract();
-                yield return new WaitForSeconds(0.2f);
-                button.OnInteractEnded();
+                yield return ToggleButton();
             }
             yield return null;
         }
